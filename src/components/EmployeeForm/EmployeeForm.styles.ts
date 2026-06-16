@@ -1,7 +1,10 @@
 import styled from 'styled-components';
-import { Card } from '../ui';
 
-export const Form = styled(Card)`
+export const Form = styled.form`
+  background: ${({ theme }) => theme.colors.surface};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing['3xl']};
+  box-shadow: ${({ theme }) => theme.shadows.card};
   margin-bottom: ${({ theme }) => theme.spacing['3xl']};
 `;
 

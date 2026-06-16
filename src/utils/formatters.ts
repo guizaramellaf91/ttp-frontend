@@ -17,8 +17,10 @@ export function formatCurrency(value: number): string {
 }
 
 export function parseCurrency(value: string): number {
-  const cleaned = value.replace(/[^\d,]/g, '').replace(',', '.');
-  return parseFloat(cleaned) || 0;
+  const digits = value.replace(/\D/g, '');
+  if (!digits) return 0;
+
+  return parseInt(digits, 10) / 100;
 }
 
 export function formatCurrencyInput(value: string): string {

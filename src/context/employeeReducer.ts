@@ -48,7 +48,9 @@ export function employeeReducer(
         searchFilters: { ...state.searchFilters, ...action.payload },
       };
 
-    default:
-      return state;
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateIRRF } from './calculateIRRF';
+import { calculateIRRF } from '@/utils/calculateIRRF';
 
 describe('calculateIRRF', () => {
   it('retorna IRRF zero quando salário base está na faixa isenta', () => {

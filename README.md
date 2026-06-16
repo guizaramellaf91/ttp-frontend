@@ -2,6 +2,8 @@
 
 Aplicação web para cadastro de funcionários e cálculo automático do Imposto de Renda Retido na Fonte (IRRF). Desenvolvida com **React**, **TypeScript** e **Vite**, sem backend.
 
+Este projeto foi construído com foco em **arquitetura limpa**, princípios **SOLID** e **cobertura de testes** — não apenas funcionalidade, mas também qualidade e manutenibilidade do código.
+
 ## Funcionalidades
 
 - Cadastrar, editar e excluir funcionários
@@ -9,28 +11,27 @@ Aplicação web para cadastro de funcionários e cálculo automático do Imposto
 - Filtrar funcionários por nome e CPF
 - Persistência dos dados no **LocalStorage**
 - Máscara de CPF e formatação monetária em Real (R$)
-- Validação básica de formulário
+- Validação de formulário com verificação de CPF duplicado
+- Dialog de confirmação customizado para exclusão
 - Layout responsivo
 
 ## Tecnologias
 
-| Tecnologia   | Uso                                      |
-| ------------ | ---------------------------------------- |
-| React 19     | Interface de usuário                     |
-| TypeScript   | Tipagem estática                         |
-| Vite         | Build tool e dev server                  |
-| Context API  | Gerenciamento global de estado           |
-| useReducer   | Lógica de estado previsível              |
-| LocalStorage | Persistência dos dados no navegador      |
+| Tecnologia        | Uso                                      |
+| ----------------- | ---------------------------------------- |
+| React 19          | Interface de usuário                     |
+| TypeScript        | Tipagem estática (strict mode)           |
+| Vite              | Build tool e dev server                  |
+| styled-components | Design system e estilização              |
+| Context API       | Gerenciamento global de estado           |
+| useReducer        | Lógica de estado previsível              |
+| Vitest            | Testes unitários                         |
+| LocalStorage      | Persistência dos dados no navegador      |
 
 ## Pré-requisitos
 
-Antes de começar, certifique-se de ter instalado:
-
 - [Node.js](https://nodejs.org/) versão 18 ou superior
 - [npm](https://www.npmjs.com/) (já incluso com o Node.js)
-
-Para verificar se estão instalados:
 
 ```bash
 node --version
@@ -39,96 +40,114 @@ npm --version
 
 ## Como executar
 
-### 1. Clone o repositório
-
 ```bash
 git clone <url-do-repositorio>
 cd ttp-frontend
-```
-
-### 2. Instale as dependências
-
-```bash
 npm install
-```
-
-### 3. Inicie o servidor de desenvolvimento
-
-```bash
 npm run dev
 ```
 
-O terminal exibirá a URL local (geralmente `http://localhost:5173`). Abra no navegador.
+Abra `http://localhost:5173` no navegador.
 
-### 4. Build para produção (opcional)
+### Build para produção
 
 ```bash
 npm run build
-```
-
-Os arquivos otimizados serão gerados na pasta `dist/`.
-
-Para visualizar o build localmente:
-
-```bash
 npm run preview
 ```
 
 ## Estrutura do projeto
 
 ```
-src/
-├── components/
-│   ├── EmployeeForm/     # Formulário de cadastro/edição
-│   ├── EmployeeTable/    # Tabela de listagem
-│   └── SearchBar/        # Filtros de busca
-├── context/
-│   ├── EmployeeContext.tsx   # Provider e hook useEmployees
-│   └── employeeReducer.ts    # Reducer com ações do estado
-├── data/
-│   ├── employees.sample.json # Funcionários de exemplo para testes
-│   └── loadSampleEmployees.ts
-├── types/
-│   └── Employee.ts       # Interfaces TypeScript
-├── utils/
-│   ├── calculateIRRF.ts  # Lógica de cálculo do IRRF
-│   └── formatters.ts     # Máscaras e formatação
-├── pages/
-│   └── Home.tsx          # Página principal
-├── App.tsx               # Componente raiz
-└── main.tsx              # Ponto de entrada
+ttp-frontend/
+├── src/
+│   ├── components/          # Componentes de UI por feature
+│   │   ├── EmployeeForm/
+│   │   ├── EmployeeTable/
+│   │   ├── SearchBar/
+│   │   └── ui/              # Primitivos reutilizáveis (Button, Input, Card...)
+│   ├── context/             # Estado global (Context + useReducer)
+│   ├── hooks/               # Hooks customizados (lógica reutilizável)
+│   ├── pages/               # Páginas da aplicação
+│   ├── styles/              # Tema, mixins e estilos globais
+│   ├── types/               # Interfaces e tipos TypeScript
+│   ├── utils/               # Funções puras (regras de negócio, formatação)
+│   └── data/                # Dados de exemplo
+└── test/                    # Testes unitários (espelha src/utils)
+    └── utils/
+        ├── calculateIRRF.test.ts
+        └── validateEmployeeForm.test.ts
 ```
 
-## Dados de exemplo
+## Arquitetura e princípios
 
-O arquivo `src/data/employees.sample.json` contém 5 funcionários de exemplo com valores variados para validar o cálculo do IRRF em diferentes faixas.
+Levamos a sério **SOLID**, **Clean Code** e **testes automatizados**. Abaixo, como esses princípios se aplicam ao projeto.
 
-Na **primeira execução** (quando não há dados salvos no navegador), esses funcionários são carregados automaticamente. Para reiniciar com os dados de exemplo:
+### Separação de responsabilidades (camadas)
 
-1. Abra as ferramentas de desenvolvedor do navegador (F12)
-2. Vá em **Application** → **Local Storage**
-3. Remova a chave `employees`
-4. Recarregue a página
+| Camada | Responsabilidade | Exemplo |
+| ------ | ---------------- | ------- |
+| `pages/` | Orquestração de tela | `Home.tsx` compõe componentes |
+| `hooks/` | Lógica de UI reutilizável | `useEmployeeForm`, `useEmployeePage` |
+| `components/` | Apresentação | `EmployeeForm`, `EmployeeTable` |
+| `context/` | Estado global | `EmployeeContext`, `employeeReducer` |
+| `utils/` | Regras de negócio puras | `calculateIRRF`, `validateEmployeeForm` |
+| `types/` | Contratos TypeScript | `Employee`, `FormErrors` |
+| `test/` | Testes unitários | Validação das regras de negócio |
+
+### SOLID na prática
+
+| Princípio | Aplicação no projeto |
+| --------- | -------------------- |
+| **S** — Single Responsibility | Cada módulo tem uma função: `calculateIRRF` só calcula imposto; `employeeStorage` só persiste; `validateEmployeeForm` só valida |
+| **O** — Open/Closed | Componentes UI aceitam variantes (`$variant`, `$hasError`) sem alterar o componente base |
+| **L** — Liskov Substitution | Hooks expõem contratos tipados; componentes recebem props bem definidas |
+| **I** — Interface Segregation | Context expõe apenas o necessário (`addEmployee`, `deleteEmployee`...) — sem vazar `dispatch` |
+| **D** — Dependency Inversion | Páginas dependem de hooks abstratos (`useEmployeePage`), não de implementações internas |
+
+### Clean Code
+
+- **Funções puras** em `utils/` — fáceis de testar e raciocinar
+- **Nomes descritivos** — `validateEmployeeForm`, `loadEmployeesFromStorage`, `createFormFromEmployee`
+- **Componentes enxutos** — `EmployeeForm` renderiza; `useEmployeeForm` contém a lógica
+- **Tipagem forte** — strict mode, sem `any`, exhaustiveness check no reducer
+- **Design tokens** — tema centralizado em `styles/theme.ts`, sem cores hardcoded
+- **Alias `@/`** — imports limpos e consistentes
+
+### Hooks — por que existem?
+
+A pasta `hooks/` **não é desnecessária** — ela separa **lógica de comportamento** da **apresentação**:
+
+| Hook | Responsabilidade |
+| ---- | ---------------- |
+| `useEmployeeForm` | Estado do formulário, validação e submissão |
+| `useEmployeePage` | Orquestração da página (editar, excluir com confirmação) |
+| `useEmployees` | Acesso ao estado global (re-export do context) |
+| `useConfirm` | Dialog de confirmação (re-export do UI) |
+
+Isso permite que `EmployeeForm.tsx` e `Home.tsx` permaneçam focados em **JSX e composição**, enquanto a lógica fica testável e reutilizável.
 
 ## Como testar
 
 ### Testes automatizados
 
-O projeto inclui testes unitários para a função de cálculo do IRRF:
+Os testes ficam em `test/`, separados do código-fonte, espelhando a estrutura de `src/`:
 
 ```bash
-npm test
+npm test           # executa todos os testes
+npm run test:watch # modo observação
 ```
 
-Para executar em modo observação (reexecuta ao salvar arquivos):
+**Cobertura atual:**
 
-```bash
-npm run test:watch
-```
+| Módulo | O que é testado |
+| ------ | --------------- |
+| `calculateIRRF` | Todas as faixas de alíquota, limites, dedução por dependente |
+| `validateEmployeeForm` | CPF duplicado, edição do próprio registro |
+
+Priorizamos testar **regras de negócio puras** em `utils/` — funções sem dependência de React, rápidas e determinísticas.
 
 ### Teste manual na aplicação
-
-Siga este roteiro para validar as funcionalidades:
 
 #### 1. Cadastro e cálculo automático
 
@@ -144,88 +163,46 @@ Com os dados de exemplo carregados, verifique na tabela:
 
 #### 2. Cadastrar novo funcionário
 
-1. Preencha o formulário com: Nome, CPF, Salário Bruto, Desconto Previdência e Dependentes
-2. Clique em **Cadastrar**
-3. Confirme que o funcionário aparece na tabela com os valores calculados
+- Salário Bruto: R$ 3.000,00 | Desconto: R$ 200,00 | Dependentes: 1
+- **Salário Base IR esperado:** R$ 2.610,41 | **IRRF:** R$ 26,34
 
-Exemplo para validar manualmente:
+#### 3. Editar, excluir e filtrar
 
-- Salário Bruto: R$ 3.000,00
-- Desconto Previdência: R$ 200,00
-- Dependentes: 1
-- **Salário Base IR esperado:** R$ 2.610,41
-- **Desconto IRRF esperado:** R$ 26,34
+1. Edite um funcionário e verifique recálculo do IRRF
+2. Exclua via dialog de confirmação customizado
+3. Filtre por nome e CPF
+4. Recarregue a página e confirme persistência no LocalStorage
 
-#### 3. Editar funcionário
+### Reiniciar dados de exemplo
 
-1. Clique em **Editar** em qualquer linha
-2. Altere um campo (ex: número de dependentes)
-3. Clique em **Salvar Alterações**
-4. Verifique se os valores de IRRF foram recalculados
-
-#### 4. Excluir funcionário
-
-1. Clique em **Excluir** em uma linha
-2. Confirme a exclusão no diálogo
-3. Verifique se o funcionário foi removido da tabela
-
-#### 5. Filtrar por nome e CPF
-
-1. Digite parte de um nome no campo **Buscar por Nome**
-2. Verifique se apenas funcionários correspondentes aparecem
-3. Limpe o filtro e teste com o CPF (com ou sem máscara)
-
-#### 6. Persistência no LocalStorage
-
-1. Cadastre ou edite um funcionário
-2. Recarregue a página (F5)
-3. Confirme que os dados permanecem após o reload
+1. F12 → **Application** → **Local Storage**
+2. Remova a chave `employees`
+3. Recarregue a página
 
 ## Regras de cálculo do IRRF
 
-### Salário Base IR
-
 ```
 Salário Base IR = Salário Bruto − Desconto Previdência − (Dependentes × R$ 189,59)
-```
-
-### Tabela de alíquotas
-
-| Faixa salarial           | Alíquota | Parcela a deduzir |
-| ------------------------ | -------- | ----------------- |
-| Até R$ 2.259,20          | 0%       | R$ 0,00           |
-| R$ 2.259,21 a R$ 2.826,65 | 7,5%    | R$ 169,44         |
-| R$ 2.826,66 a R$ 3.751,05 | 15%     | R$ 381,44         |
-| R$ 3.751,06 a R$ 4.664,68 | 22,5%   | R$ 662,77         |
-| Acima de R$ 4.664,68     | 27,5%    | R$ 896,00         |
-
-### Desconto IRRF
-
-```
 Desconto IRRF = (Salário Base IR × Alíquota) − Parcela a Deduzir
 ```
 
-A função `calculateIRRF` em `src/utils/calculateIRRF.ts` encapsula toda essa lógica.
-
-## Gerenciamento de estado
-
-O estado global é gerenciado com **Context API** + **useReducer**:
-
-- `EmployeeContext` — provê o estado e as ações para toda a aplicação
-- `employeeReducer` — processa ações: adicionar, editar, excluir e filtrar
-- `useEmployees` — hook customizado para consumir o contexto
-
-Os dados são salvos automaticamente no `localStorage` sempre que a lista de funcionários é alterada.
+| Faixa salarial            | Alíquota | Parcela a deduzir |
+| ------------------------- | -------- | ----------------- |
+| Até R$ 2.259,20           | 0%       | R$ 0,00           |
+| R$ 2.259,21 a R$ 2.826,65 | 7,5%     | R$ 169,44         |
+| R$ 2.826,66 a R$ 3.751,05 | 15%      | R$ 381,44         |
+| R$ 3.751,06 a R$ 4.664,68 | 22,5%    | R$ 662,77         |
+| Acima de R$ 4.664,68      | 27,5%    | R$ 896,00         |
 
 ## Scripts disponíveis
 
-| Comando             | Descrição                              |
-| ------------------- | -------------------------------------- |
-| `npm run dev`       | Inicia o servidor de desenvolvimento   |
-| `npm run build`     | Gera o build de produção               |
-| `npm run preview`   | Visualiza o build de produção localmente |
-| `npm test`          | Executa os testes automatizados        |
-| `npm run test:watch`| Executa testes em modo observação      |
+| Comando              | Descrição                              |
+| -------------------- | -------------------------------------- |
+| `npm run dev`        | Inicia o servidor de desenvolvimento   |
+| `npm run build`      | Gera o build de produção               |
+| `npm run preview`    | Visualiza o build de produção          |
+| `npm test`           | Executa os testes automatizados        |
+| `npm run test:watch` | Executa testes em modo observação      |
 
 ## Licença
 

@@ -1,5 +1,6 @@
 [
   {
+    "id": "sample-joao-silva",
     "name": "João Silva",
     "cpf": "52998224725",
     "grossSalary": 2000,
@@ -7,6 +8,7 @@
     "dependents": 0
   },
   {
+    "id": "sample-maria-santos",
     "name": "Maria Santos",
     "cpf": "39053344705",
     "grossSalary": 3000,
@@ -14,6 +16,7 @@
     "dependents": 1
   },
   {
+    "id": "sample-pedro-oliveira",
     "name": "Pedro Oliveira",
     "cpf": "11144477735",
     "grossSalary": 5000,
@@ -21,6 +24,7 @@
     "dependents": 2
   },
   {
+    "id": "sample-ana-costa",
     "name": "Ana Costa",
     "cpf": "86804563050",
     "grossSalary": 8000,
@@ -28,6 +32,7 @@
     "dependents": 0
   },
   {
+    "id": "sample-carlos-ferreira",
     "name": "Carlos Ferreira",
     "cpf": "71428793860",
     "grossSalary": 2500,

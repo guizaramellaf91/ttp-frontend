@@ -3,6 +3,7 @@ export const colors = {
   primaryHover: '#1d4ed8',
   primaryLight: '#dbeafe',
   danger: '#dc2626',
+  dangerHover: '#b91c1c',
   dangerLight: '#fee2e2',
   background: '#f8fafc',
   surface: '#ffffff',

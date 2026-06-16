@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -45,7 +46,10 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
 
   const confirm = useCallback((options: ConfirmOptions) => {
     return new Promise<boolean>((resolve) => {
-      setDialog({ ...options, resolve });
+      setDialog((current) => {
+        current?.resolve(false);
+        return { ...options, resolve };
+      });
     });
   }, []);
 
@@ -59,6 +63,8 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!dialog) return;
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     cancelButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -68,21 +74,24 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [dialog, close]);
+
+  const contextValue = useMemo(() => ({ confirm }), [confirm]);
 
   const title = dialog?.title ?? DEFAULT_OPTIONS.title;
   const confirmLabel = dialog?.confirmLabel ?? DEFAULT_OPTIONS.confirmLabel;
   const cancelLabel = dialog?.cancelLabel ?? DEFAULT_OPTIONS.cancelLabel;
 
   return (
-    <ConfirmDialogContext.Provider value={{ confirm }}>
+    <ConfirmDialogContext.Provider value={contextValue}>
       {children}
       {dialog && (
-        <Overlay
-          role="presentation"
-          onClick={() => close(false)}
-        >
+        <Overlay role="presentation" onClick={() => close(false)}>
           <Dialog
             role="alertdialog"
             aria-modal="true"
@@ -101,11 +110,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
               >
                 {cancelLabel}
               </Button>
-              <Button
-                type="button"
-                $variant="danger"
-                onClick={() => close(true)}
-              >
+              <Button type="button" $variant="danger" onClick={() => close(true)}>
                 {confirmLabel}
               </Button>
             </DialogActions>

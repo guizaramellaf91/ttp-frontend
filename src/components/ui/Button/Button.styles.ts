@@ -50,7 +50,7 @@ const variantStyles = {
     border: none;
 
     &:hover {
-      background: #b91c1c;
+      background: ${({ theme }) => theme.colors.dangerHover};
     }
   `,
 } as const;
