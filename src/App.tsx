@@ -1,14 +1,22 @@
+import { ThemeProvider } from 'styled-components';
 import { EmployeeProvider } from './context/EmployeeContext';
+import { ConfirmDialogProvider } from './components/ui';
 import { Home } from './pages/Home';
-import './App.css';
+import { theme, GlobalStyle } from './styles';
+import { AppContainer } from './App.styles';
 
 function App() {
   return (
-    <EmployeeProvider>
-      <div className="app">
-        <Home />
-      </div>
-    </EmployeeProvider>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <ConfirmDialogProvider>
+        <EmployeeProvider>
+          <AppContainer>
+            <Home />
+          </AppContainer>
+        </EmployeeProvider>
+      </ConfirmDialogProvider>
+    </ThemeProvider>
   );
 }
 

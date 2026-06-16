@@ -1,27 +1,28 @@
 import { useEmployees } from '../../context/EmployeeContext';
 import { formatCPF } from '../../utils/formatters';
-import './SearchBar.css';
+import { FormField, Input, Label, SectionTitle } from '../ui';
+import { SearchContainer, SearchFields } from './SearchBar.styles';
 
 export function SearchBar() {
   const { searchFilters, setSearchFilters } = useEmployees();
 
   return (
-    <div className="search-bar">
-      <h2>Funcionários Cadastrados</h2>
-      <div className="search-fields">
-        <div className="search-group">
-          <label htmlFor="search-name">Buscar por Nome</label>
-          <input
+    <SearchContainer>
+      <SectionTitle>Funcionários Cadastrados</SectionTitle>
+      <SearchFields>
+        <FormField>
+          <Label htmlFor="search-name">Buscar por Nome</Label>
+          <Input
             id="search-name"
             type="text"
             value={searchFilters.name}
             onChange={(e) => setSearchFilters({ name: e.target.value })}
             placeholder="Digite o nome..."
           />
-        </div>
-        <div className="search-group">
-          <label htmlFor="search-cpf">Buscar por CPF</label>
-          <input
+        </FormField>
+        <FormField>
+          <Label htmlFor="search-cpf">Buscar por CPF</Label>
+          <Input
             id="search-cpf"
             type="text"
             value={searchFilters.cpf}
@@ -29,8 +30,8 @@ export function SearchBar() {
             placeholder="000.000.000-00"
             maxLength={14}
           />
-        </div>
-      </div>
-    </div>
+        </FormField>
+      </SearchFields>
+    </SearchContainer>
   );
 }

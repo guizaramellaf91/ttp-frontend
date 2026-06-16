@@ -1,6 +1,12 @@
 import type { EmployeeWithTax } from '../../types/Employee';
 import { formatCPF, formatCurrency } from '../../utils/formatters';
-import './EmployeeTable.css';
+import { Button } from '../ui';
+import {
+  EmptyState,
+  Table,
+  TableActions,
+  TableWrapper,
+} from './EmployeeTable.styles';
 
 interface EmployeeTableProps {
   employees: EmployeeWithTax[];
@@ -11,15 +17,15 @@ interface EmployeeTableProps {
 export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProps) {
   if (employees.length === 0) {
     return (
-      <div className="table-empty">
+      <EmptyState>
         <p>Nenhum funcionário encontrado.</p>
-      </div>
+      </EmptyState>
     );
   }
 
   return (
-    <div className="table-wrapper">
-      <table className="employee-table">
+    <TableWrapper>
+      <Table>
         <thead>
           <tr>
             <th>Nome</th>
@@ -51,27 +57,27 @@ export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProp
                 {formatCurrency(employee.irrfDiscount)}
               </td>
               <td data-label="Ações">
-                <div className="table-actions">
-                  <button
+                <TableActions>
+                  <Button
                     type="button"
-                    className="btn btn-edit"
+                    $variant="edit"
                     onClick={() => onEdit(employee)}
                   >
                     Editar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="btn btn-delete"
+                    $variant="delete"
                     onClick={() => onDelete(employee.id)}
                   >
                     Excluir
-                  </button>
-                </div>
+                  </Button>
+                </TableActions>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </TableWrapper>
   );
 }

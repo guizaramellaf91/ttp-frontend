@@ -7,7 +7,17 @@ import {
   parseCurrency,
 } from '../../utils/formatters';
 import { useEmployees } from '../../context/EmployeeContext';
-import './EmployeeForm.css';
+import {
+  Button,
+  FormField,
+  FormGrid,
+  Input,
+  InputPrefix,
+  Label,
+  ErrorMessage,
+  SectionTitle,
+} from '../ui';
+import { Form, FormActions } from './EmployeeForm.styles';
 
 const emptyForm: EmployeeFormData = {
   name: '',
@@ -136,60 +146,60 @@ export function EmployeeForm({ editingEmployee, onCancelEdit }: EmployeeFormProp
   };
 
   return (
-    <form className="employee-form" onSubmit={handleSubmit}>
-      <h2>{editingEmployee ? 'Editar Funcionário' : 'Cadastrar Funcionário'}</h2>
+    <Form onSubmit={handleSubmit}>
+      <SectionTitle>
+        {editingEmployee ? 'Editar Funcionário' : 'Cadastrar Funcionário'}
+      </SectionTitle>
 
-      <div className="form-grid">
-        <div className="form-group">
-          <label htmlFor="name">Nome</label>
-          <input
+      <FormGrid>
+        <FormField>
+          <Label htmlFor="name">Nome</Label>
+          <Input
             id="name"
             type="text"
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Nome completo"
-            className={errors.name ? 'input-error' : ''}
+            $hasError={!!errors.name}
           />
-          {errors.name && <span className="error-message">{errors.name}</span>}
-        </div>
+          {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+        </FormField>
 
-        <div className="form-group">
-          <label htmlFor="cpf">CPF</label>
-          <input
+        <FormField>
+          <Label htmlFor="cpf">CPF</Label>
+          <Input
             id="cpf"
             type="text"
             value={formData.cpf}
             onChange={(e) => handleChange('cpf', e.target.value)}
             placeholder="000.000.000-00"
             maxLength={14}
-            className={errors.cpf ? 'input-error' : ''}
+            $hasError={!!errors.cpf}
           />
-          {errors.cpf && <span className="error-message">{errors.cpf}</span>}
-        </div>
+          {errors.cpf && <ErrorMessage>{errors.cpf}</ErrorMessage>}
+        </FormField>
 
-        <div className="form-group">
-          <label htmlFor="grossSalary">Salário Bruto</label>
-          <div className="input-prefix">
+        <FormField>
+          <Label htmlFor="grossSalary">Salário Bruto</Label>
+          <InputPrefix $hasError={!!errors.grossSalary}>
             <span>R$</span>
-            <input
+            <Input
               id="grossSalary"
               type="text"
               value={formData.grossSalary}
               onChange={(e) => handleChange('grossSalary', e.target.value)}
               placeholder="0,00"
-              className={errors.grossSalary ? 'input-error' : ''}
+              $hasError={!!errors.grossSalary}
             />
-          </div>
-          {errors.grossSalary && (
-            <span className="error-message">{errors.grossSalary}</span>
-          )}
-        </div>
+          </InputPrefix>
+          {errors.grossSalary && <ErrorMessage>{errors.grossSalary}</ErrorMessage>}
+        </FormField>
 
-        <div className="form-group">
-          <label htmlFor="socialSecurityDiscount">Desconto Previdência</label>
-          <div className="input-prefix">
+        <FormField>
+          <Label htmlFor="socialSecurityDiscount">Desconto Previdência</Label>
+          <InputPrefix $hasError={!!errors.socialSecurityDiscount}>
             <span>R$</span>
-            <input
+            <Input
               id="socialSecurityDiscount"
               type="text"
               value={formData.socialSecurityDiscount}
@@ -197,40 +207,38 @@ export function EmployeeForm({ editingEmployee, onCancelEdit }: EmployeeFormProp
                 handleChange('socialSecurityDiscount', e.target.value)
               }
               placeholder="0,00"
-              className={errors.socialSecurityDiscount ? 'input-error' : ''}
+              $hasError={!!errors.socialSecurityDiscount}
             />
-          </div>
+          </InputPrefix>
           {errors.socialSecurityDiscount && (
-            <span className="error-message">{errors.socialSecurityDiscount}</span>
+            <ErrorMessage>{errors.socialSecurityDiscount}</ErrorMessage>
           )}
-        </div>
+        </FormField>
 
-        <div className="form-group">
-          <label htmlFor="dependents">Número de Dependentes</label>
-          <input
+        <FormField>
+          <Label htmlFor="dependents">Número de Dependentes</Label>
+          <Input
             id="dependents"
             type="text"
             value={formData.dependents}
             onChange={(e) => handleChange('dependents', e.target.value)}
             placeholder="0"
-            className={errors.dependents ? 'input-error' : ''}
+            $hasError={!!errors.dependents}
           />
-          {errors.dependents && (
-            <span className="error-message">{errors.dependents}</span>
-          )}
-        </div>
-      </div>
+          {errors.dependents && <ErrorMessage>{errors.dependents}</ErrorMessage>}
+        </FormField>
+      </FormGrid>
 
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
+      <FormActions>
+        <Button type="submit" $variant="primary">
           {editingEmployee ? 'Salvar Alterações' : 'Cadastrar'}
-        </button>
+        </Button>
         {editingEmployee && (
-          <button type="button" className="btn btn-secondary" onClick={handleCancel}>
+          <Button type="button" $variant="secondary" onClick={handleCancel}>
             Cancelar
-          </button>
+          </Button>
         )}
-      </div>
-    </form>
+      </FormActions>
+    </Form>
   );
 }
