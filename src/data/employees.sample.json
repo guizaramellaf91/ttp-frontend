@@ -1,0 +1,37 @@
+[
+  {
+    "name": "João Silva",
+    "cpf": "52998224725",
+    "grossSalary": 2000,
+    "socialSecurityDiscount": 150,
+    "dependents": 0
+  },
+  {
+    "name": "Maria Santos",
+    "cpf": "39053344705",
+    "grossSalary": 3000,
+    "socialSecurityDiscount": 200,
+    "dependents": 1
+  },
+  {
+    "name": "Pedro Oliveira",
+    "cpf": "11144477735",
+    "grossSalary": 5000,
+    "socialSecurityDiscount": 500,
+    "dependents": 2
+  },
+  {
+    "name": "Ana Costa",
+    "cpf": "86804563050",
+    "grossSalary": 8000,
+    "socialSecurityDiscount": 800,
+    "dependents": 0
+  },
+  {
+    "name": "Carlos Ferreira",
+    "cpf": "71428793860",
+    "grossSalary": 2500,
+    "socialSecurityDiscount": 180,
+    "dependents": 2
+  }
+]
