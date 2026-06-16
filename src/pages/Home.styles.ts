@@ -30,3 +30,10 @@ export const Subtitle = styled.p`
 export const EmployeesSection = styled.section`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
+
+export const LoadingState = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing['5xl']};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+`;

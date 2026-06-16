@@ -12,7 +12,7 @@ export const Label = styled.label`
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
-export const ErrorMessage = styled.span`
+export const ErrorMessage = styled.span.attrs({ role: 'alert' })`
   font-size: ${({ theme }) => theme.fontSizes.xs};
   color: ${({ theme }) => theme.colors.danger};
 `;

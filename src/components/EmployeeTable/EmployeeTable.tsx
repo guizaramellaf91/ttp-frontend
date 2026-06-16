@@ -1,6 +1,6 @@
-import type { EmployeeWithTax } from '../../types/Employee';
-import { formatCPF, formatCurrency } from '../../utils/formatters';
-import { Button } from '../ui';
+import type { EmployeeWithTax } from '@/types/Employee';
+import { formatCPF, formatCurrency } from '@/utils/formatters';
+import { Button } from '@/components/ui';
 import {
   EmptyState,
   Table,

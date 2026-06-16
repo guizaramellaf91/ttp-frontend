@@ -1,6 +1,6 @@
-import { useEmployees } from '../../context/EmployeeContext';
-import { formatCPF } from '../../utils/formatters';
-import { FormField, Input, Label, SectionTitle } from '../ui';
+import { useEmployees } from '@/hooks';
+import { formatCPF } from '@/utils/formatters';
+import { FormField, Input, Label } from '@/components/ui';
 import { SearchContainer, SearchFields } from './SearchBar.styles';
 
 export function SearchBar() {
@@ -8,7 +8,6 @@ export function SearchBar() {
 
   return (
     <SearchContainer>
-      <SectionTitle>Funcionários Cadastrados</SectionTitle>
       <SearchFields>
         <FormField>
           <Label htmlFor="search-name">Buscar por Nome</Label>

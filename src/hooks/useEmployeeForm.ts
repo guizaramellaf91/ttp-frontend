@@ -13,14 +13,16 @@ interface UseEmployeeFormOptions {
   initialData: EmployeeFormData;
   editingEmployee: Employee | null;
   onCancelEdit: () => void;
+  onSuccess?: () => void;
 }
 
 export function useEmployeeForm({
   initialData,
   editingEmployee,
   onCancelEdit,
+  onSuccess,
 }: UseEmployeeFormOptions) {
-  const { employees, addEmployee, updateEmployee, setSearchFilters } = useEmployees();
+  const { employees, addEmployee, updateEmployee } = useEmployees();
   const [formData, setFormData] = useState<EmployeeFormData>(initialData);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -33,7 +35,7 @@ export function useEmployeeForm({
       } else if (field === 'grossSalary' || field === 'socialSecurityDiscount') {
         formatted = formatCurrencyInput(value);
       } else if (field === 'dependents') {
-        formatted = value.replace(/\D/g, '');
+        formatted = value.replace(/\D/g, '').slice(0, 2);
       }
 
       setFormData((prev) => ({ ...prev, [field]: formatted }));
@@ -71,12 +73,12 @@ export function useEmployeeForm({
       } else {
         addEmployee(employeeData);
         setFormData(createEmptyForm());
-        setSearchFilters({ name: '', cpf: '' });
       }
 
       setErrors({});
+      onSuccess?.();
     },
-    [formData, employees, editingEmployee, addEmployee, updateEmployee, onCancelEdit, setSearchFilters]
+    [formData, employees, editingEmployee, addEmployee, updateEmployee, onCancelEdit, onSuccess]
   );
 
   const handleCancel = useCallback(() => {

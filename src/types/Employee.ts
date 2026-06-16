@@ -22,13 +22,7 @@ export interface EmployeeTaxInfo {
 
 export interface EmployeeWithTax extends Employee, EmployeeTaxInfo {}
 
-export interface FormErrors {
-  name?: string;
-  cpf?: string;
-  grossSalary?: string;
-  socialSecurityDiscount?: string;
-  dependents?: string;
-}
+export type FormErrors = Partial<Record<keyof EmployeeFormData, string>>;
 
 export interface SearchFilters {
   name: string;

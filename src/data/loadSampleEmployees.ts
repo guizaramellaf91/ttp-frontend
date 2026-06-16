@@ -1,6 +1,9 @@
-import type { Employee } from '../types/Employee';
+import type { Employee } from '@/types/Employee';
+import { isEmployee } from '@/utils/employeeGuards';
 import sampleData from './employees.sample.json';
 
 export function loadSampleEmployees(): Employee[] {
-  return sampleData as Employee[];
+  if (!Array.isArray(sampleData)) return [];
+
+  return sampleData.filter(isEmployee);
 }

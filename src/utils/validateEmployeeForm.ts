@@ -51,6 +51,8 @@ export function validateEmployeeForm({
   const dependents = parseInt(data.dependents, 10);
   if (isNaN(dependents) || dependents < 0) {
     errors.dependents = 'Número de dependentes inválido';
+  } else if (dependents > 99) {
+    errors.dependents = 'Número de dependentes não pode exceder 99';
   }
 
   return errors;

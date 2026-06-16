@@ -8,19 +8,20 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { Employee, EmployeeWithTax, SearchFilters } from '../types/Employee';
-import { loadSampleEmployees } from '../data/loadSampleEmployees';
-import { calculateIRRF } from '../utils/calculateIRRF';
+import type { Employee, EmployeeWithTax, SearchFilters } from '@/types/Employee';
+import { loadSampleEmployees } from '@/data/loadSampleEmployees';
+import { calculateIRRF } from '@/utils/calculateIRRF';
 import {
   loadEmployeesFromStorage,
   saveEmployeesToStorage,
-} from '../utils/employeeStorage';
+} from '@/utils/employeeStorage';
 import { employeeReducer, initialState } from './employeeReducer';
 
 interface EmployeeContextValue {
   employees: Employee[];
   filteredEmployees: EmployeeWithTax[];
   searchFilters: SearchFilters;
+  isHydrated: boolean;
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
   updateEmployee: (employee: Employee) => void;
   deleteEmployee: (id: string) => void;
@@ -50,14 +51,7 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
     const cpfFilter = state.searchFilters.cpf.replace(/\D/g, '');
 
     return state.employees
-      .map((emp) => {
-        const tax = calculateIRRF(
-          emp.grossSalary,
-          emp.socialSecurityDiscount,
-          emp.dependents
-        );
-        return { ...emp, ...tax };
-      })
+      .map((emp) => ({ ...emp, ...calculateIRRF(emp.grossSalary, emp.socialSecurityDiscount, emp.dependents) }))
       .filter((emp) => {
         const matchesName =
           !nameFilter || emp.name.toLowerCase().includes(nameFilter);
@@ -68,11 +62,10 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
   }, [state.employees, state.searchFilters]);
 
   const addEmployee = useCallback((employee: Omit<Employee, 'id'>) => {
-    const newEmployee: Employee = {
-      ...employee,
-      id: crypto.randomUUID(),
-    };
-    dispatch({ type: 'ADD_EMPLOYEE', payload: newEmployee });
+    dispatch({
+      type: 'ADD_EMPLOYEE',
+      payload: { ...employee, id: crypto.randomUUID() },
+    });
   }, []);
 
   const updateEmployee = useCallback((employee: Employee) => {
@@ -92,6 +85,7 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
       employees: state.employees,
       filteredEmployees,
       searchFilters: state.searchFilters,
+      isHydrated,
       addEmployee,
       updateEmployee,
       deleteEmployee,
@@ -101,6 +95,7 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
       state.employees,
       state.searchFilters,
       filteredEmployees,
+      isHydrated,
       addEmployee,
       updateEmployee,
       deleteEmployee,

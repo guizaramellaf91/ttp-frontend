@@ -1,21 +1,7 @@
-import type { Employee } from '../types/Employee';
+import type { Employee } from '@/types/Employee';
+import { isEmployee } from './employeeGuards';
 
 const STORAGE_KEY = 'employees';
-
-function isEmployee(value: unknown): value is Employee {
-  if (!value || typeof value !== 'object') return false;
-
-  const employee = value as Record<string, unknown>;
-
-  return (
-    typeof employee.id === 'string' &&
-    typeof employee.name === 'string' &&
-    typeof employee.cpf === 'string' &&
-    typeof employee.grossSalary === 'number' &&
-    typeof employee.socialSecurityDiscount === 'number' &&
-    typeof employee.dependents === 'number'
-  );
-}
 
 export function loadEmployeesFromStorage(): Employee[] {
   try {
@@ -31,6 +17,11 @@ export function loadEmployeesFromStorage(): Employee[] {
   }
 }
 
-export function saveEmployeesToStorage(employees: Employee[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+export function saveEmployeesToStorage(employees: Employee[]): boolean {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+    return true;
+  } catch {
+    return false;
+  }
 }

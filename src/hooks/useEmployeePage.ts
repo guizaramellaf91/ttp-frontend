@@ -4,14 +4,16 @@ import { useEmployees } from '@/context/EmployeeContext';
 import { useConfirm } from '@/components/ui/ConfirmDialog';
 
 export function useEmployeePage() {
-  const { filteredEmployees, deleteEmployee } = useEmployees();
+  const { filteredEmployees, deleteEmployee, setSearchFilters, isHydrated } =
+    useEmployees();
   const confirm = useConfirm();
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
 
   const handleEdit = useCallback((employee: Employee) => {
     setEditingEmployee(employee);
+    setSearchFilters({ name: '', cpf: '' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [setSearchFilters]);
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -35,11 +37,17 @@ export function useEmployeePage() {
     setEditingEmployee(null);
   }, []);
 
+  const handleFormSuccess = useCallback(() => {
+    setSearchFilters({ name: '', cpf: '' });
+  }, [setSearchFilters]);
+
   return {
     filteredEmployees,
     editingEmployee,
+    isHydrated,
     handleEdit,
     handleDelete,
     handleCancelEdit,
+    handleFormSuccess,
   };
 }

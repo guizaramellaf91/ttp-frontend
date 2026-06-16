@@ -1,3 +1,5 @@
+import type { EmployeeTaxInfo } from '@/types/Employee';
+
 const DEPENDENT_DEDUCTION = 189.59;
 
 const IRRF_BRACKETS = [
@@ -8,16 +10,11 @@ const IRRF_BRACKETS = [
   { min: 4664.69, max: Infinity, rate: 0.275, deduction: 896.0 },
 ] as const;
 
-export interface IRRFResult {
-  baseSalaryIR: number;
-  irrfDiscount: number;
-}
-
 export function calculateIRRF(
   grossSalary: number,
   socialSecurityDiscount: number,
   dependents: number
-): IRRFResult {
+): EmployeeTaxInfo {
   const baseSalaryIR = Math.max(
     0,
     grossSalary - socialSecurityDiscount - dependents * DEPENDENT_DEDUCTION

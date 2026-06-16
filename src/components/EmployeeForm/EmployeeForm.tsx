@@ -1,6 +1,6 @@
-import type { Employee } from '@/types/Employee';
+import type { Employee, FormErrors } from '@/types/Employee';
 import { createEmptyForm, createFormFromEmployee } from '@/utils/employeeForm';
-import { useEmployeeForm } from '@/hooks/useEmployeeForm';
+import { useEmployeeForm } from '@/hooks';
 import {
   Button,
   FormField,
@@ -10,28 +10,38 @@ import {
   Label,
   ErrorMessage,
   SectionTitle,
-} from '../ui';
+} from '@/components/ui';
 import { Form, FormActions } from './EmployeeForm.styles';
 
 interface EmployeeFormProps {
   editingEmployee: Employee | null;
   onCancelEdit: () => void;
+  onSuccess?: () => void;
 }
 
 interface EmployeeFormFieldsProps extends EmployeeFormProps {
   initialData: ReturnType<typeof createEmptyForm>;
 }
 
+function getFieldAria(field: keyof FormErrors, errors: FormErrors) {
+  const message = errors[field];
+  return {
+    'aria-invalid': Boolean(message),
+    'aria-describedby': message ? `${field}-error` : undefined,
+  };
+}
+
 function EmployeeFormFields({
   editingEmployee,
   onCancelEdit,
+  onSuccess,
   initialData,
 }: EmployeeFormFieldsProps) {
   const { formData, errors, isEditing, handleChange, handleSubmit, handleCancel } =
-    useEmployeeForm({ initialData, editingEmployee, onCancelEdit });
+    useEmployeeForm({ initialData, editingEmployee, onCancelEdit, onSuccess });
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} noValidate>
       <SectionTitle>
         {isEditing ? 'Editar Funcionário' : 'Cadastrar Funcionário'}
       </SectionTitle>
@@ -46,8 +56,11 @@ function EmployeeFormFields({
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Nome completo"
             $hasError={!!errors.name}
+            {...getFieldAria('name', errors)}
           />
-          {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+          {errors.name && (
+            <ErrorMessage id="name-error">{errors.name}</ErrorMessage>
+          )}
         </FormField>
 
         <FormField>
@@ -60,8 +73,9 @@ function EmployeeFormFields({
             placeholder="000.000.000-00"
             maxLength={14}
             $hasError={!!errors.cpf}
+            {...getFieldAria('cpf', errors)}
           />
-          {errors.cpf && <ErrorMessage>{errors.cpf}</ErrorMessage>}
+          {errors.cpf && <ErrorMessage id="cpf-error">{errors.cpf}</ErrorMessage>}
         </FormField>
 
         <FormField>
@@ -75,9 +89,12 @@ function EmployeeFormFields({
               onChange={(e) => handleChange('grossSalary', e.target.value)}
               placeholder="0,00"
               $hasError={!!errors.grossSalary}
+              {...getFieldAria('grossSalary', errors)}
             />
           </InputPrefix>
-          {errors.grossSalary && <ErrorMessage>{errors.grossSalary}</ErrorMessage>}
+          {errors.grossSalary && (
+            <ErrorMessage id="grossSalary-error">{errors.grossSalary}</ErrorMessage>
+          )}
         </FormField>
 
         <FormField>
@@ -93,10 +110,13 @@ function EmployeeFormFields({
               }
               placeholder="0,00"
               $hasError={!!errors.socialSecurityDiscount}
+              {...getFieldAria('socialSecurityDiscount', errors)}
             />
           </InputPrefix>
           {errors.socialSecurityDiscount && (
-            <ErrorMessage>{errors.socialSecurityDiscount}</ErrorMessage>
+            <ErrorMessage id="socialSecurityDiscount-error">
+              {errors.socialSecurityDiscount}
+            </ErrorMessage>
           )}
         </FormField>
 
@@ -105,12 +125,17 @@ function EmployeeFormFields({
           <Input
             id="dependents"
             type="text"
+            inputMode="numeric"
             value={formData.dependents}
             onChange={(e) => handleChange('dependents', e.target.value)}
             placeholder="0"
+            maxLength={2}
             $hasError={!!errors.dependents}
+            {...getFieldAria('dependents', errors)}
           />
-          {errors.dependents && <ErrorMessage>{errors.dependents}</ErrorMessage>}
+          {errors.dependents && (
+            <ErrorMessage id="dependents-error">{errors.dependents}</ErrorMessage>
+          )}
         </FormField>
       </FormGrid>
 
@@ -128,7 +153,11 @@ function EmployeeFormFields({
   );
 }
 
-export function EmployeeForm({ editingEmployee, onCancelEdit }: EmployeeFormProps) {
+export function EmployeeForm({
+  editingEmployee,
+  onCancelEdit,
+  onSuccess,
+}: EmployeeFormProps) {
   const formKey = editingEmployee?.id ?? 'new';
   const initialData = editingEmployee
     ? createFormFromEmployee(editingEmployee)
@@ -139,6 +168,7 @@ export function EmployeeForm({ editingEmployee, onCancelEdit }: EmployeeFormProp
       key={formKey}
       editingEmployee={editingEmployee}
       onCancelEdit={onCancelEdit}
+      onSuccess={onSuccess}
       initialData={initialData}
     />
   );
